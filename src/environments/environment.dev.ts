@@ -1,7 +1,7 @@
 import {common} from './environment.common'
 
 export const environment = {
-  production: true,
+  production: false,
 
   ...common
 };
