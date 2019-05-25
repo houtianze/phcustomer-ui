@@ -1,5 +1,16 @@
 # PhcustomerUi
 
+## Build & Running
+
+This is a standard Angular projec, so run the following commands to build & run in dev env:
+
+- `npm install -g @angular/cli`
+- `npm install`
+- `ng serve`
+Then open: `http://localhost:4200`
+
+-- Below is auto generated --
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.9.
 
 ## Development server
