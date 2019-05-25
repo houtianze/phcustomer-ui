@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators'
 
 import { environment } from '../../environments/environment'
+import { Observable } from 'rxjs';
 
 export enum Status {
   Prospective = "prospective",
@@ -10,11 +11,22 @@ export enum Status {
   NonActive = "non-active"
 }
 
+export interface HRef {
+  href: string
+}
+
+export interface Links {
+  customer: HRef
+  notes: HRef
+  self: HRef
+}
+
 export interface Customer {
   name: string,
   email: string,
   phone: string,
-  status: Status
+  status: Status,
+  _links: Links
 }
 
 export interface Note {
@@ -31,17 +43,17 @@ export class CustomerService {
     return this.http.get(environment.apiServer)
   }
 
-  getCustomers() {
+  getCustomers(): Observable<Customer[]> {
     return this.http.get(environment.apiServer + '/customers')
       .pipe(map(halToCustomerList))
   }
 
-  getNotes() {
+  getNotes(): Observable<Note[]> {
     return this.http.get(environment.apiServer + '/notes')
       .pipe(map(halToNoteList))
   }
 
-  getNotesForCustomer(customerId: number) {
+  getNotesForCustomer(customerId): Observable<Note[]> {
     return this.http.get(environment.apiServer + `/customers/${customerId}/notes`)
       .pipe(map(halToNoteList))
   }
