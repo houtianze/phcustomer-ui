@@ -1,0 +1,17 @@
+.customer-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-info .property {
+  display: flex;
+  flex-direction: row;
+}
+
+.property .property-label {
+  width: 100px;
+}
+
+.property .property-text {
+  flex-grow: 1;
+}

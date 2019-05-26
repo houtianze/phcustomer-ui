@@ -1,3 +1,33 @@
-<mat-card *ngFor="let note of (notes | async)">
-  {{note.text}}
-</mat-card>
+<div class="customer-info" *ngIf="customer">
+  <div class="property">
+    <div class="property-label">Name</div>
+    <input matInput class="property-text" readonly [ngModel]="customer.name">
+  </div>
+  <div class="property">
+    <div class="property-label">Email</div>
+    <input matInput class="property-text" readonly [ngModel]="customer.email">
+  </div>
+  <div class="property">
+    <div class="property-label">Phone</div>
+    <input matInput class="property-text" readonly [ngModel]="customer.phone">
+  </div>
+  <div class="property">
+    <div class="property-label">Status</div>
+    <input matInput class="property-text" readonly [ngModel]="customer.status">
+  </div>
+</div>
+<form>
+  <div style="display: flex; flex-flow: column">
+    <div style="display: flex" *ngFor="let note of (notes | async)">
+      <mat-form-field style="flex-grow: 1; margin: 2px">
+        <!-- <textarea matInput [(ngModel)]="note.text" name="note-text"> </textarea> -->
+        <input matInput [(ngModel)]="note.text" name="note-text">
+      </mat-form-field>
+      <button mat-button color="primary">Save</button>
+      <button mat-button color="warn">Remove</button>
+    </div>
+    <button mat-button color="basic" style="width: 100%">Add new Note</button>
+    <mat-divider></mat-divider>
+    <button mat-button color="primary" style="width: 100%">Save All</button>
+  </div>
+</form>

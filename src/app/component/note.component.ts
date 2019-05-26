@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AppComponent } from '../app.component';
-import { CustomerService, Note } from '../service/customer.service';
+import { CustomerService, Note, Customer } from '../service/customer.service';
 import { Observable } from 'rxjs';
-import { notStrictEqual } from 'assert';
+import { CommonService } from '../service/common.service';
 
 @Component({
   selector: 'app-note',
@@ -12,17 +11,23 @@ import { notStrictEqual } from 'assert';
 })
 export class NoteComponent implements OnInit {
 
+  title = "Notes"
+  customer: Customer
+  notes: Observable<Note[]>
+
   constructor(
     private route: ActivatedRoute,
-    private appComponent: AppComponent,
+    private commonService: CommonService,
     private customerService: CustomerService) { }
 
   ngOnInit() {
-    this.appComponent.setTitle('Notes')
+    this.customer = this.commonService.customer
+    if (this.customer) {
+      this.title = `Notes for ${this.customer.name}`
+    }
+    this.commonService.setTitle(this.title)
     const customerId = this.route.snapshot.paramMap.get('customerId')
     // console.log("got id:", customerId)
     this.notes = this.customerService.getNotesForCustomer(customerId)
   }
-
-  notes: Observable<Note[]>
 }

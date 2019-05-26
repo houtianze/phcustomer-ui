@@ -5,7 +5,7 @@ import { CellClickedEvent, ColumnApi, GridApi, GridReadyEvent } from 'ag-grid-co
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Customer, CustomerService } from '../service/customer.service';
-
+import { CommonService } from '../service/common.service';
 
 @Component({
   selector: 'app-customer',
@@ -27,6 +27,7 @@ export class CustomerComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private commonService: CommonService,
     private customerService: CustomerService) {}
 
   ngOnInit() {
@@ -44,6 +45,7 @@ export class CustomerComponent implements OnInit {
   onCellClicked(ccEvent: CellClickedEvent) {
     if (ccEvent.colDef.headerName === 'Notes') {
       // this.router.navigateByUrl(`/notes/${ccEvent.data._links.notes}`)
+      this.commonService.customer = ccEvent.data
       var customerHRef: string[] = ccEvent.data._links.customer.href.split('/')
       var customerId = customerHRef[customerHRef.length - 1]
       this.router.navigateByUrl(`/notes/${customerId}`)

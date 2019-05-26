@@ -1,21 +1,14 @@
-import { Component } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { Component, Output, OnInit } from '@angular/core';
+import { CommonService } from './service/common.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
-  // title = 'phcustomer-ui';
-  private title = 'Customers';
-
-  public constructor(private titleService: Title) {
-    this.setTitle(this.title)
+export class AppComponent implements OnInit {
+  ngOnInit(): void {
+    this.commonService.setTitle("Customer")
   }
-
-  public setTitle(title) {
-    this.title = title
-    this.titleService.setTitle(title)
-  }
+  public constructor(private commonService: CommonService) { }
 }
