@@ -18,16 +18,23 @@
 </div>
 <form>
   <div style="display: flex; flex-flow: column">
-    <div style="display: flex" *ngFor="let note of (notes | async)">
-      <mat-form-field style="flex-grow: 1; margin: 2px">
+    <div style="display: flex" *ngFor="let note of notes$ | async">
+      <mat-form-field>
         <!-- <textarea matInput [(ngModel)]="note.text" name="note-text"> </textarea> -->
-        <input matInput [(ngModel)]="note.text" name="note-text">
+        <input matInput #noteInput [id]="note.id" [ngModel]="note.text" name="{{'note-text-' + note.id}}">
       </mat-form-field>
-      <button mat-button color="primary">Save</button>
-      <button mat-button color="warn">Remove</button>
+      <button mat-button color="primary" (click)="saveNote(noteInput.id, noteInput.value)">Save</button>
+      <button mat-button color="warn" (click)="removeNote(noteInput.id)">Remove</button>
     </div>
-    <button mat-button color="basic" style="width: 100%">Add new Note</button>
     <mat-divider></mat-divider>
-    <button mat-button color="primary" style="width: 100%">Save All</button>
+    <div style="display: flex">
+      <mat-form-field>
+        <!-- <textarea matInput [(ngModel)]="note.text" name="note-text"> </textarea> -->
+        <input matInput #newNote name="new-note-text">
+      </mat-form-field>
+      <button mat-button color="primary" (click)="addNote(newNote.value)">Add</button>
+    </div>
+    <!-- <mat-divider></mat-divider>
+    <button mat-button color="primary" class="full-width-button">Save All</button> -->
   </div>
 </form>

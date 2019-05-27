@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { } from 'ag-grid-angular';
-import { CellClickedEvent, ColumnApi, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { AgGridColumn } from 'ag-grid-angular';
+import { CellClickedEvent, ColumnApi, GridApi, GridReadyEvent, CellValueChangedEvent } from 'ag-grid-community';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Customer, CustomerService } from '../service/customer.service';
@@ -12,7 +12,7 @@ import { CommonService } from '../service/common.service';
   templateUrl: './customer.component.html',
   styleUrls: ['./customer.component.css']
 })
-export class CustomerComponent implements OnInit {
+export class CustomerComponent implements OnInit, AfterViewInit {
   private columnDefs = [
     {headerName: 'Name', field: 'name', sortable: true, filter: true},
     {headerName: 'Email', field: 'email', sortable: true, filter: true},
@@ -21,9 +21,11 @@ export class CustomerComponent implements OnInit {
     {headerName: 'Creation Time', field: 'creationTime', width: 240, sortable: true, filter: true},
     {headerName: 'Notes', field: 'notesButton', width: 64}
   ]
+  @ViewChild('agGrid')
+  private agGrid: any
+  // private gridApi: GridApi
+  // private columnApi: ColumnApi
   private customers: Observable<Customer[]>
-  private gridApi: GridApi
-  private columnApi: ColumnApi
 
   constructor(
     private router: Router,
@@ -37,18 +39,25 @@ export class CustomerComponent implements OnInit {
         return customer;})));
   }
 
+  ngAfterViewInit(): void {
+    console.log(this.agGrid)
+  }
+
   onGridReady(grEvent: GridReadyEvent) {
-    this.gridApi = grEvent.api;
-    this.columnApi = grEvent.columnApi;
+    // this.gridApi = grEvent.api;
+    // this.columnApi = grEvent.columnApi;
   }
 
   onCellClicked(ccEvent: CellClickedEvent) {
     if (ccEvent.colDef.headerName === 'Notes') {
       // this.router.navigateByUrl(`/notes/${ccEvent.data._links.notes}`)
       this.commonService.customer = ccEvent.data
-      var customerHRef: string[] = ccEvent.data._links.customer.href.split('/')
-      var customerId = customerHRef[customerHRef.length - 1]
+      var customerId = ccEvent.data.id
       this.router.navigateByUrl(`/notes/${customerId}`)
     }
+  }
+
+  onCellValueChanged(event: CellValueChangedEvent) {
+    this.customerService.saveCustomer(event.data)
   }
 }

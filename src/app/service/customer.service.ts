@@ -22,15 +22,18 @@ export interface Links {
 }
 
 export interface Customer {
-  name: string,
-  email: string,
-  phone: string,
-  status: Status,
+  id: number
+  name: string
+  email: string
+  phone: string
+  status: Status
   _links: Links
 }
 
 export interface Note {
+  id: number
   text: string
+  _links: Links
 }
 
 @Injectable({
@@ -48,14 +51,43 @@ export class CustomerService {
       .pipe(map(halToCustomerList))
   }
 
+  getCustomer(customerId: number): Observable<Customer> {
+    return <Observable<Customer>> this.http.get(environment.apiServer + `/customers/${customerId}`)
+  }
+
+  saveCustomer(customer: Customer) {
+    return this.http.put<Customer>(environment.apiServer + `/customers/${customer.id}`, customer).subscribe()
+  }
+
   getNotes(): Observable<Note[]> {
     return this.http.get(environment.apiServer + '/notes')
       .pipe(map(halToNoteList))
   }
 
-  getNotesForCustomer(customerId): Observable<Note[]> {
+  getNotesForCustomer(customerId: number): Observable<Note[]> {
     return this.http.get(environment.apiServer + `/customers/${customerId}/notes`)
       .pipe(map(halToNoteList))
+  }
+
+  addNoteForCustomer(note: Note, customerId: number) {
+    // https://www.baeldung.com/spring-data-rest-relationships
+    return this.http.post<Note>(environment.apiServer + '/notes', note).subscribe(newNote =>{
+      const customerHref = environment.apiServer + `/customers/${customerId}`
+      this.http.put(
+        newNote._links.self.href + '/customer',
+        customerHref,
+        { headers: {
+          'Content-Type': 'text/uri-list',
+          'Accept': '*/*'} }).subscribe(x => window.location.reload())
+    })
+  }
+
+  removeNote(noteId: number) {
+    return this.http.delete(environment.apiServer + `/notes/${noteId}`)
+  }
+
+  saveNote(note: Note) {
+    return this.http.put<Note>(environment.apiServer + `/notes/${note.id}`, note)
   }
 }
 

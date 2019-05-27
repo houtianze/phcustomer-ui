@@ -13,7 +13,7 @@ export class NoteComponent implements OnInit {
 
   title = "Notes"
   customer: Customer
-  notes: Observable<Note[]>
+  notes$: Observable<Note[]>
 
   constructor(
     private route: ActivatedRoute,
@@ -21,13 +21,30 @@ export class NoteComponent implements OnInit {
     private customerService: CustomerService) { }
 
   ngOnInit() {
-    this.customer = this.commonService.customer
-    if (this.customer) {
-      this.title = `Notes for ${this.customer.name}`
-    }
     this.commonService.setTitle(this.title)
-    const customerId = this.route.snapshot.paramMap.get('customerId')
+    let customerId = parseInt(this.route.snapshot.paramMap.get('customerId'))
+    this.customerService.getCustomer(customerId).subscribe(customer => {
+      this.customer = customer
+    })
+    // this.customer = this.commonService.customer
+    // if (this.customer) {
+    //   this.title = `Notes for ${this.customer.name}`
+    // }
     // console.log("got id:", customerId)
-    this.notes = this.customerService.getNotesForCustomer(customerId)
+    this.notes$ = this.customerService.getNotesForCustomer(customerId)
+  }
+
+  addNote(text: string) {
+    const note = {id: null, text: text, _links: null}
+    this.customerService.addNoteForCustomer(note, this.customer.id)
+  }
+
+  removeNote(noteId: string) {
+    this.customerService.removeNote(parseInt(noteId)).subscribe(x => window.location.reload())
+  }
+
+  saveNote(id: string, text: string) {
+    const note = {id: parseInt(id), text: text, _links: null}
+    this.customerService.saveNote(note).subscribe(x => window.location.reload())
   }
 }
